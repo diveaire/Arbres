@@ -23,9 +23,6 @@ Pour compiler et exécuter le programme de l'arbre AVL, utilisez la commande sui
 ## Contribution
 Les contributions à ce projet sont les bienvenues.
 
-## Licence
-Ce projet est sous la licence Creative Commons Attribution 4.0 International (CC BY 4.0).
-
 ## Auteurs
 - [Auvray Nicolas](https://github.com/diveaire)
 
