@@ -1,45 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 
-#include "header/arbre.h"
 #include "header/arbreBinaireSimple.h"
-#include "header/affichageArbre.h"
-#include "header/pile.h"
-#include "header/file.h"
 
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- CREATION -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
-/* ARBRE BINAIRE SIMPLE */
-Noeud * creerNoeud(int valeur){
-    Noeud * nouveauNoeud = (Noeud *) malloc(sizeof(Noeud));
-    if (nouveauNoeud == NULL ){
-        printf("Erreur allocation nouveau noeud\n");
-        exit(1);
-    }
-    nouveauNoeud->valeur=valeur;
-    nouveauNoeud->gauche=NULL;
-    nouveauNoeud->droite=NULL;
-    return nouveauNoeud;
-}
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------- BOOLEEN -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
-/* Fonction permettant de retourner 1 si l'arbre est vide */
-int arbreVide(Arbre * monArbre ){
-    if (monArbre == NULL || monArbre->racine == NULL) return 1;
-    return 0;
-}
-
-/* Fonction permettant de retourner 1 si le noeud est une feuille (pas de fils gauche/droite )*/
-int estFeuille(Noeud * monNoeud){
-    if (monNoeud->droite == NULL && monNoeud->gauche == NULL) return 1;
-    return 0;
-}
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------ AJOUTS VALEURS ---------------------------------------------------------------------- */
@@ -75,9 +39,17 @@ void ajoutDansArbre(int valeur, Arbre * monArbre){
         ajoutValeur(valeur, monArbre->racine);
     }
 }
+
 /* Fonction permettant d'ajouter de façon aléatoire un sous arbre dans une autre arbre à la position d'une certaine valeur */
 void ajoutSousArbre( Arbre * monArbre, int valeur, Arbre * monArbre2 ) {
     Noeud * monNoeud1 = rechercheNoeudDFS(monArbre->racine,valeur);
+    if (monNoeud1 == NULL) {
+        printf("La valeur (%d) n'est pas dans l'Arbre\n", valeur);
+        return;
+    }else if (arbreVide(monArbre2)){
+        printf("L'arbre à ajouté est vide'\n");
+        return;
+    }
     Noeud * monNoeud2 = monArbre2->racine;
     if (monNoeud1->gauche == NULL){
         monNoeud1->gauche = monNoeud2;
@@ -105,33 +77,6 @@ void ajoutSousArbre( Arbre * monArbre, int valeur, Arbre * monArbre2 ) {
 }
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- HAUTEUR --------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
-
-/* Fonction permettant de calculer la hauteur en fonction d'un noeud de départ */
-int hauteurNoeud(Noeud *monNoeud) {
-    if (monNoeud == NULL) {
-        return 0; // Un nœud nul a une hauteur de 0
-    }
-
-    // Calcul de la hauteur de chaque sous-arbre
-    int hauteurGauche = hauteurNoeud(monNoeud->gauche);
-    int hauteurDroite = hauteurNoeud(monNoeud->droite);
-
-    // La hauteur de l'arbre est le maximum des hauteurs des sous-arbres plus 1
-    return (hauteurGauche > hauteurDroite ? hauteurGauche : hauteurDroite) + 1;
-}
-
-/* Fonction permettant de calculer la hauteur d'un arbre */
-int hauteurArbre(Arbre *monArbre) {
-    if (arbreVide(monArbre)) {
-        return 0; // Cas de base: un arbre vide a une hauteur de 0
-    }
-    return hauteurNoeud(monArbre->racine); //calcul de la hauteur en fonction de la racine
-}
-
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- PROFONDEUR ------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -152,9 +97,9 @@ int profondeurNoeud(Noeud * noeud, int valeur, int profondeur){
 }
 
 /* Permet de calculer la plus petite profondeur entre la racine de l'arbre et un noeud de l'arbre en fonction de sa valeur 
-    - retourne la profondeur ou -1 si 
-    - l'arbre est vide
-    - la valeur n'est pas dans l'arbre
+    retour : la profondeur OU -1 si :
+        - l'arbre est vide
+        - la valeur n'est pas dans l'arbre
 */
 int profondeurArbre(Arbre * monArbre, int valeur){
     if (arbreVide(monArbre)){
@@ -203,10 +148,10 @@ Noeud * rechercheArbreDFS(Arbre *monArbre, int valeur) {
     return NoeudRecherche;
 }
 
+
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------------- BFS ----------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
 
 /* Permet de faire la recherche en profondeur en fonction de Noeud contenu dans la file */
 void recherche(File *file, int valeur) {
@@ -243,16 +188,14 @@ void rechercheArbreBFSRecursif(Arbre *monArbre, int valeur) {
     }
 
     // Créer et initialiser la file
-    File *file = (File *)malloc(sizeof(File));
-    file->premier = NULL;
+    File *file = initFile();
     enfile(file, monArbre->racine);
 
     // Démarrer la recherche
     recherche(file, valeur);
 
     // Nettoyage
-    videFile(file);
-    free(file);
+    supprimerFile(file);
 }
 
 void rechercheArbreBFSIteratif(Arbre *monArbre, int valeur) {
@@ -292,16 +235,11 @@ void rechercheArbreBFSIteratif(Arbre *monArbre, int valeur) {
     videFile(file);
     free(file);
 }
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-/* ------------------------------------------------------------------------- AFFICHAGE -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-/* UTILISER afficher_arbre_ascii(Arbre * monArbre); */
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------ SUPPRESSION ------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-
 
 void supprimerNoeudValeur(Arbre *monArbre, Noeud *monNoeud, Noeud *parent, int valeur) {
     if (monNoeud == NULL) {
@@ -348,11 +286,11 @@ void supprimerNoeudValeur(Arbre *monArbre, Noeud *monNoeud, Noeud *parent, int v
 
         // Suppression du noeud
         free(monNoeud);
-    } else {
-        // Si le noeud n'est pas celui rechercher on cherche récursivement dans les fils
-        supprimerNoeudValeur(monArbre, monNoeud->gauche, monNoeud, valeur);
-        supprimerNoeudValeur(monArbre, monNoeud->droite, monNoeud, valeur);
+        return;
     }
+    // Si le noeud n'est pas celui rechercher on cherche récursivement dans les fils
+    supprimerNoeudValeur(monArbre, monNoeud->gauche, monNoeud, valeur);
+    supprimerNoeudValeur(monArbre, monNoeud->droite, monNoeud, valeur);
 }
 
 void supprimerArbreValeur(Arbre *monArbre, int valeur) {
@@ -361,20 +299,6 @@ void supprimerArbreValeur(Arbre *monArbre, int valeur) {
         return;
     }
     supprimerNoeudValeur(monArbre, monArbre->racine, NULL, valeur);
-}
-
-
-// Permet de supprimer un noeud ainsi que ses fils 
-void supprimerNoeud(Noeud * monNoeud){
-    if (monNoeud == NULL) return;
-    supprimerNoeud(monNoeud->gauche);
-    supprimerNoeud(monNoeud->droite);
-    free(monNoeud);
-}
-// Permet de supprimer un arbre
-void supprimerArbre(Arbre * monArbre){
-    if(monArbre == NULL || monArbre->racine == NULL ) return;
-    supprimerNoeud(monArbre->racine);
 }
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */

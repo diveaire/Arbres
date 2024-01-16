@@ -2,24 +2,16 @@
 #define __ARBREBINAIRESIMPLE__
 
 #include "arbre.h"
-#include "pile.h"
-
-Noeud * creerNoeud(int valeur);
+#include "affichageArbre.h"
+#include "file.h"
 
 void ajoutDansArbre(int valeur, Arbre * monArbre);
 void ajoutValeur(int valeur, Noeud * monNoeud);
 void ajoutSousArbre( Arbre * monArbre, int valeur, Arbre * monArbre2 );
 
-int arbreVide(Arbre * monArbre );
-int estFeuille(Noeud * monNoeud);
-
-int hauteurArbre(Arbre *monArbre);
-int hauteurNoeud(Noeud *monNoeud);
-
 void supprimerArbreValeur(Arbre *monArbre, int valeur);
 void supprimerNoeudValeur(Arbre *monArbre, Noeud *monNoeud, Noeud *parent, int valeur);
-void supprimerArbre(Arbre * monArbre);
-void supprimerNoeud(Noeud * monNoeud);
+
 
 void afficheArbre(Noeud * monNoeud);
 
