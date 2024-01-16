@@ -1,7 +1,10 @@
+/*
+    *** SOURCE : https://stackoverflow.com/questions/801740/c-how-to-draw-a-binary-tree-to-the-console ***
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "header/arbre.h"  // Assurez-vous que ce fichier contient les définitions de Noeud et Arbre
+
 #include "header/affichageArbre.h"
 
 
@@ -113,8 +116,7 @@ void calculer_longueurs_aretes(NoeudASCII *noeud) {
             delta = MAX(delta, ecart + 1 + profil_droit[i] - profil_gauche[i]);
         }
         
-        //If the node has two children of height 1, then we allow the
-        //two leaves to be within 1, instead of 2 
+        //If the node has two children of height 1, then we allow the two leaves to be within 1, instead of 2 
         if (((noeud->gauche != NULL && noeud->gauche->hauteur == 1) || (noeud->droite != NULL && noeud->droite->hauteur == 1))&&delta>4) {
             delta--;
         }
@@ -194,7 +196,7 @@ void afficher_arbre_ascii(Arbre * arbre) {
         printf("\n");
     }
     if (racine_ascii->hauteur >= MAX_HAUTEUR) {
-        printf("(Cet arbre est plus haut que %d, et peut être dessiné incorrectement.)\n", MAX_HAUTEUR);
+        printf("( Cet arbre est plus haut que %d, et peut être dessiné incorrectement. )\n", MAX_HAUTEUR);
     }
     liberer_arbre_ascii(racine_ascii);
 }
