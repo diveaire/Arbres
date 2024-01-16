@@ -13,13 +13,14 @@ typedef struct File{
     ElementFile * premier;
 } File;
 
-
+File * initFile(void);
 ElementFile* creerElementFile(Noeud * monNoeud);
 void enfile(File * file, Noeud * monNoeud);
 Noeud * defile(File * file);
 int tailleFile(File* file);
 int fileVide(File* file);
 void videFile(File *file);
+void supprimerFile(File * maFile);
 ElementFile * PremierElm(File* file);
 void afficheFile(File* file);
 
