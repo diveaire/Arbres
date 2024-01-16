@@ -3,6 +3,13 @@
 #include "header/file.h"
 #include "header/arbre.h"
 
+
+File * initFile(void){
+    File * maFile = (File *)malloc(sizeof(File));
+    maFile->premier = NULL;
+    return maFile;
+}
+
 // Fonction qui permet de créer un nouvel ElementFile de File en respectant les allocations mémoires
 ElementFile* creerElementFile(Noeud * monNoeud){
     ElementFile* nouveau = (ElementFile*) malloc(sizeof(ElementFile));
@@ -92,7 +99,11 @@ void videFile(File *file) {
     }
 }
 
-
+/* Fonction permettant de supprimer une file */
+void supprimerFile(File * maFile){
+    videFile(maFile);
+    free(maFile);
+}
 
 // fonction qui permet de faire l'affichage de la File dans son ordre de défillement
 void afficheFile(File* file){
