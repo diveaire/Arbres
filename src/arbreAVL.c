@@ -85,7 +85,7 @@ Noeud * rotationDroite(Noeud * monNoeud){
 }
 
 Noeud * rotationDroiteGauche(Noeud * monNoeud){
-    Noeud * sd = monNoeud->gauche;
+    Noeud * sd = monNoeud->droite;
     Noeud * sdg = sd->gauche;
     sd->gauche = sdg->droite;
     sdg->droite = sd;
