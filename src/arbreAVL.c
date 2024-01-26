@@ -85,6 +85,11 @@ Noeud * rotationDroite(Noeud * monNoeud){
 }
 
 Noeud * rotationDroiteGauche(Noeud * monNoeud){
+    monNoeud->droite = rotationDroite(monNoeud->droite); // Rotation à droite sur le sous-arbre droit
+    return rotationGauche(monNoeud); // Rotation à gauche sur le noeud principal
+}
+
+/* Noeud * rotationDroiteGauche(Noeud * monNoeud){
     Noeud * sd = monNoeud->droite;
     Noeud * sdg = sd->gauche;
     sd->gauche = sdg->droite;
@@ -93,9 +98,14 @@ Noeud * rotationDroiteGauche(Noeud * monNoeud){
     sdg->gauche = monNoeud;
     monNoeud = sdg;
     return monNoeud;
-}
+} */
 
 Noeud * rotationGaucheDroite(Noeud * monNoeud){
+    monNoeud->gauche = rotationGauche(monNoeud->gauche); // Rotation à gauche sur le sous-arbre gauche
+    return rotationDroite(monNoeud); // Rotation à droite sur le noeud principal
+}
+
+/*Noeud * rotationGaucheDroite(Noeud * monNoeud){
     Noeud * sg=monNoeud->gauche;
     Noeud * sgd = sg->droite;
     sg->droite = sgd->gauche;
@@ -104,7 +114,7 @@ Noeud * rotationGaucheDroite(Noeud * monNoeud){
     sgd->droite = monNoeud;
     monNoeud = sgd;
     return monNoeud;
-}
+}*/
 
 
 //Fonction de rangement d'un AVL
@@ -163,6 +173,63 @@ Noeud * recherche(Noeud* monNoeud,int valeur){
         return recherche(monNoeud->droite,valeur);
     }
 }
+
+Noeud * noeudValMin(Noeud* noeud) {
+    Noeud* courant = noeud;
+
+    // feuille la plus à gauche
+    while (courant->gauche != NULL) {
+        courant = courant->gauche;
+    }
+
+    return courant;
+}
+
+Noeud * supprimerValeur(Noeud* racine, int valeur) {
+    if (racine == NULL) {
+        return racine;
+    }
+
+    // Recherche de la valeur à supprimer
+    if (valeur < racine->valeur) {
+        racine->gauche = supprimerValeur(racine->gauche, valeur);
+    } else if (valeur > racine->valeur) {
+        racine->droite = supprimerValeur(racine->droite, valeur);
+    } else {
+        // Cas où le noeud à supprimer est trouvé
+        if (racine->gauche == NULL || racine->droite == NULL) {
+            Noeud* temp = racine->gauche ? racine->gauche : racine->droite;
+
+            // Pas d'enfant
+            if (temp == NULL) {
+                temp = racine;
+                racine = NULL;
+            } else {
+                // Un enfant
+                *racine = *temp; // Copie du contenu du non-NULL
+            }
+            free(temp);
+        } else {
+            // Deux enfants : obtenir le successeur inordre (le plus petit dans l'arbre de droite)
+            Noeud* temp = noeudValMin(racine->droite);
+
+            // Copie du successeur inordre dans ce noeud
+            racine->valeur = temp->valeur;
+
+            // Supprimer le successeur inordre
+            racine->droite = supprimerValeur(racine->droite, temp->valeur);
+        }
+    }
+
+    // Si l'arbre avait un seul noeud, il est maintenant vide
+    if (racine == NULL) {
+        return racine;
+    }
+
+    // Rééquilibrage de l'arbre
+    return equilibreAVL(racine);
+}
+
 
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------------------------- */
